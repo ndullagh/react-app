@@ -86,5 +86,18 @@ const addUser = (user) => {
     addUser(userToAdd);
     res.send();
   });
+
+app.delete("/users/:id", (req, res) => {
+    const id = req.params["id"];
+    let result = findUserById(id);
+    if (result === undefined) {
+        res.status(404).send("Resource not found.");
+    }
+    else {
+        const index = users.users_list.indexOf(result);
+        users.users_list.splice(index, 1);
+        res.send(users)
+    }
+});
   
   
