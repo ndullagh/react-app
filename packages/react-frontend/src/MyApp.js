@@ -15,13 +15,21 @@ function MyApp() {
     }
 
 
-    function updateList(person) { 
+    function updateList(person) {
       postUser(person)
-        .then(() => setCharacters([...characters, person]))
+        .then((response) => {
+          // Check if the response status code is 201 (Content Created)
+          if (response.status === 201) {
+            return response.json(); // Parse the JSON data from the response
+          } else {
+            throw new Error(`Failed to add user. Status code: ${response.status}`);
+          }
+        })
+        .then((data) => setCharacters([...characters, data.addedUser]))
         .catch((error) => {
           console.log(error);
-        })
-  }
+        });
+    }
 
     //(a new inner function inside MyApp())
     
