@@ -80,7 +80,7 @@ app.get("/users/:id", (req, res) => {
 
 const addUser = (user) => {
     //generate a random Id for the new user
-    user["id"] = generateId();
+    user["id"] = String(generateId());
 
     //add the user
     users["users_list"].push(user);
@@ -95,6 +95,7 @@ const addUser = (user) => {
 
 app.delete("/users/:id", (req, res) => {
     const id = req.params["id"];
+    console.log(users["users_list"]);
     let result = findUserById(id);
     if (result === undefined) {
         res.status(404).send("Resource not found.");
@@ -102,7 +103,7 @@ app.delete("/users/:id", (req, res) => {
     else {
         const index = users.users_list.indexOf(result);
         users.users_list.splice(index, 1);
-        res.send(users)
+        res.status(204).send(users)
     }
 });
   

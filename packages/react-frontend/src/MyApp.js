@@ -8,10 +8,23 @@ function MyApp() {
     const [characters, setCharacters] = useState([]);
 
     function removeOneCharacter(index) {
-      const updated = characters.filter((character, i) => {
-        return i !== index;
+      const userId = characters[index].id; // Get the user ID
+      deleteUser(userId)
+      .then((response) => {
+        if (response.status === 204) {
+          // Successfully deleted on the server, now update the frontend state
+          setCharacters((prevCharacters) => {
+            const updatedCharacters = prevCharacters.filter((character, i) => i !== index);
+            console.log(updatedCharacters)
+            return updatedCharacters;
+          });
+        } else {
+          throw new Error(`Failed to delete user. Status code: ${response.status}`);
+        }
+      })
+      .catch((error) => {
+        console.error(error);
       });
-      setCharacters(updated);
     }
 
 
@@ -20,6 +33,7 @@ function MyApp() {
         .then((response) => {
           // Check if the response status code is 201 (Content Created)
           if (response.status === 201) {
+            console.log(response.json)
             return response.json(); // Parse the JSON data from the response
           } else {
             throw new Error(`Failed to add user. Status code: ${response.status}`);
@@ -52,6 +66,18 @@ function MyApp() {
           "Content-Type": "application/json",
         },
         body: JSON.stringify(person),
+      });
+  
+      return promise;
+    }
+
+    function deleteUser(userId) {
+      //const userId = characters[index].id;
+      const promise = fetch(`Http://localhost:8000/users/${userId}`, {
+        method: "DELETE",
+        headers: {
+          "Content-Type": "application/json",
+        }
       });
   
       return promise;
