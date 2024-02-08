@@ -8,7 +8,7 @@ function MyApp() {
     const [characters, setCharacters] = useState([]);
 
     function removeOneCharacter(index) {
-      const userId = characters[index].id; // Get the user ID
+      const userId = characters[index]._id; // Get the user ID
       deleteUser(userId)
       .then((response) => {
         if (response.status === 204) {
@@ -33,13 +33,13 @@ function MyApp() {
         .then((response) => {
           // Check if the response status code is 201 (Content Created)
           if (response.status === 201) {
-            console.log(response.json)
+            console.log(response.body)
             return response.json(); // Parse the JSON data from the response
           } else {
             throw new Error(`Failed to add user. Status code: ${response.status}`);
           }
         })
-        .then((data) => setCharacters([...characters, data.addedUser]))
+        .then((data) => setCharacters([...characters, data]))
         .catch((error) => {
           console.log(error);
         });
@@ -55,7 +55,7 @@ function MyApp() {
     useEffect(() => {
       fetchUsers()
         .then((res) => res.json())
-        .then((json) => setCharacters(json["users_list"]))
+        .then((json) => setCharacters(json))
         .catch((error) => { console.log(error); });
     }, [] );
 
